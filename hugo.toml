@@ -1,0 +1,77 @@
+baseURL = 'https://blog.localvar.cn/'
+theme = 'mainroad'
+paginate = 10
+languageCode = 'zh-CN'
+hasCJKLanguage = true
+defaultContentLanguage = 'zh-cn'
+
+[menu]
+  [[menu.main]]
+    name = '文章'
+    pageRef = '/posts'
+    weight = 10
+  [[menu.main]]
+    name = '留言本'
+    pageRef = '/guestbook'
+    weight = 20
+  [[menu.main]]
+    name = '关于'
+    pageRef = '/about'
+    weight = 30
+  [[menu.footer]]
+    name = '京ICP备17043225号-1'
+    url = 'https://beian.miit.gov.cn/'
+
+[params]
+  copyright = '张博民'
+  description = "张博民的个人博客"
+  opengraph = true
+  readmore = false # Show "Read more" button in list if true
+  toc = false # Enable Table of Contents
+  pager = true # Show pager navigation (prev/next links) at the bottom of pages if true
+  post_meta = ["author", "date", "categories", "wordcount"] # Order of post meta information
+  mainSections = ["posts", "about"]
+  dateformat = "2006-01-02" # Change the format of dates
+  mathjax = false # Disable MathJax by default
+  # authorbox = true # Show authorbox at bottom of pages if true
+  
+[params.author]
+  name = "张博民"
+  #bio = "John Doe's true identity is unknown. Maybe he is a successful blogger or writer. Nobody knows it."
+  avatar = "img/avatar.png"
+
+[params.meta]
+  favicon = true
+
+[params.logo]
+  image = "img/logo.png" # Logo image. Path relative to "static"
+
+[params.style.vars]
+  # Override font-family sets
+  # Take care of different quotes OR escaping symbols in these params if necessary
+  fontFamilyPrimary = "'Microsoft YaHei', 'Open Sans', Helvetica, Arial, sans-serif"
+
+[params.sidebar]
+  home = "right" # Configure layout for home page
+  list = "right"  # Configure layout for list pages
+  single = false # Configure layout for single pages
+  # Enable widgets in given order
+  widgets = ["search", "recent", "categories", "taglist", "social"]
+
+[params.widgets.social]
+  cached = false # activate cache if true
+  github = "localvar"
+
+[languages]
+  [languages.zh-cn]
+    languageCode = 'zh-CN'
+    languageName = '简体中文'
+    title = '局部变量的作用域'
+    weight = 1
+  [languages.zh-cn.params]
+    subtitle = "把有限的生命周期投入到无限的程序逻辑中去"
+
+[permalinks]
+  [permalinks.page]
+    posts = 'posts/:year/:filename'
+    about = 'about'

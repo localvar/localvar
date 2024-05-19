@@ -1,0 +1,6 @@
+{{- if .Param "author.name" -}}
+<div class="meta__item-author meta__item">
+	{{ partial "svg/author.svg" (dict "class" "meta__icon") -}}
+	<span class="meta__text">{{ .Param "author.name" }}</span>
+</div>
+{{- end -}}
