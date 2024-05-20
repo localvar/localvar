@@ -5,7 +5,7 @@ categories = ['技术']
 tags = ['其他']
 +++
 
-最近学习了一些 CDDT（Conflict-free replicated data type，无冲突可复制数据类型）相关的知识，其中，提到，CRDT 满足强最终一致性，这是介于最终一致性和强一致性之间的一个一致性级别。
+最近学习了一些 CRDT（Conflict-free replicated data type，无冲突可复制数据类型）相关的知识，其中，提到，CRDT 满足强最终一致性，这是介于最终一致性和强一致性之间的一个一致性级别。
 
 强一致性和最终一致性的区别很明显，也有很多文章讲过，并不难理解。但对于强最终一致性和最终一致性的区别，我只找到一些理论性的说明（例如 [stackoverflow 上的这个回答](https://stackoverflow.com/questions/29381442/eventual-consistency-vs-strong-eventual-consistency-vs-strong-consistency)），缺乏结合实例的说明，看不到它们在实际应用上导致的不同用户体验，让我着实为如何区分它们伤了一番脑筋。
 
