@@ -3,6 +3,8 @@ title = 'C++编译器如何实现异常处理'
 date = 2005-07-21T09:31:00+08:00
 categories = ['技术']
 tags = ['C++']
+[params]
+  origin = 'translated'
 [params.author]
   name = 'Vishal Kochhar'
 +++

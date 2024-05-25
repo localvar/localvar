@@ -3,6 +3,8 @@ title = 'extern "C"'
 date = 2008-03-10T20:30:00+08:00
 categories = ['技术']
 tags = ['C++']
+[params]
+  origin = 'copied'
 [params.author]
   name = '佚名'
 +++

@@ -75,3 +75,6 @@ defaultContentLanguage = 'zh-cn'
   [permalinks.page]
     posts = 'posts/:year/:filename'
     about = 'about'
+
+[markup.goldmark.renderer]
+  unsafe = true

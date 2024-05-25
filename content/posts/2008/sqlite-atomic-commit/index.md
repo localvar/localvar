@@ -3,6 +3,8 @@ title = 'SQLITE中原子提交的实现'
 date = 2008-02-13T17:30:00+08:00
 categories = ['技术']
 tags = ['数据库', '算法']
+[params]
+  origin = 'translated'
 [params.author]
   name = '未知'
 +++

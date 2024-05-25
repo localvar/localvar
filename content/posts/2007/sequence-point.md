@@ -3,6 +3,8 @@ title = 'C/C++中的序列点'
 date = 2007-02-07T10:30:00+08:00
 categories = ['技术']
 tags = ['C++']
+[params]
+  origin = 'copied'
 [params.author]
   name = '佚名'
 +++

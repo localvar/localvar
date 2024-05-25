@@ -5,6 +5,7 @@
 			<a href="{{ .RelPermalink }}" rel="bookmark">
 			{{ .Title }}
 			</a>
+			{{- partial (.Params.origin | default "original" | printf "svg/%s.svg") (dict "class" "meta-icon") -}}
 		</h2>
 		{{- with .Params.lead }}
 		<p class="list__lead post__lead">{{ . }}</p>
@@ -17,10 +18,8 @@
 		{{ .Summary }}
 	</div>
 	{{- if .Site.Params.readmore }}
-	{{- if .Truncated }}
 	<div class="list__footer clearfix">
 		<a class="list__footer-readmore btn" href="{{ .RelPermalink }}">{{ T "read_more" }}</a>
 	</div>
-	{{- end }}
 	{{- end }}
 </article>
