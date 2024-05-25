@@ -1,0 +1,35 @@
+{{- if not hugo.IsServer -}}
+{{- if .IsPage -}}
+
+<script>
+'use strict';
+(function() {
+	const elem = document.querySelector('span[data-permalink="{{- .RelPermalink -}}"]');
+	if(elem) {
+		const url = '/pvc{{- .RelPermalink -}}';
+		fetch(url, {method: 'POST'}).then(resp => resp.text()).then(data => elem.textContent = data)
+	}
+}());
+</script>
+
+{{- else -}}
+
+<script>
+'use strict';
+(function() {
+	const elems = document.querySelectorAll('span[data-permalink]');
+	if(elems.length === 0) {
+		return;
+	}
+	fetch("/pvc/").then(resp => resp.json()).then(data => {
+		elems.forEach(elem => {
+			const key = elem.getAttribute("data-permalink");
+			const val = data[key.substring(1)] || '0';
+			elem.textContent = val;
+		})
+	})
+}());
+</script>
+
+{{- end -}}
+{{- end -}}
