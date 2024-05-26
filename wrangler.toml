@@ -1,0 +1,21 @@
+name = "website"
+compatibility_date = "2023-12-01"
+
+# [vars]
+# MY_VAR = "my-variable"
+
+[[kv_namespaces]]
+binding = "blogpv"
+id = "995ce10fce814c32bd99b5a80bd54c78"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+[[d1_databases]]
+binding = "db"
+database_name = "website"
+database_id = "b88ce556-4c28-4e03-bad4-b722f7e8d4ba"
+
+# [ai]
+# binding = "AI"

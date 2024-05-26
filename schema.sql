@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS letter (time TEXT PRIMARY KEY, ip TEXT, ua TEXT, served INTEGER, url TEXT);
