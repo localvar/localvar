@@ -1,6 +1,7 @@
 +++
 title = '在你身边工作，已是最好的回报'
 date = 2023-05-20T17:09:00+08:00
+tags = ['MegaEase']
 +++
 
 半年多以前，我写了一篇[《在 MegaEase 工作是一种怎样的体验》]({{<ref "working-at-megaease.md">}})，皓哥转发到了[推特](https://twitter.com/haoel/status/1565163398530158592)上，一时间，我这个平时基本无人问津的博客的流量增长了上千倍。

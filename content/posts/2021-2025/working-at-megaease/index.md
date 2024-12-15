@@ -3,6 +3,7 @@ title = '在 MegaEase 工作是一种怎样的体验？'
 date = 2022-09-01T09:15:22+08:00
 categories = ['软件工程']
 aliases = ["/megaease", "/archives/working-at-megaease"]
+tags = ['MegaEase']
 +++
 
 没人邀，所以目前还在飞机上，也只能发到自己的博客里……

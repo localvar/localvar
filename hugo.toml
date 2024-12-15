@@ -70,6 +70,13 @@ defaultContentLanguage = 'zh-cn'
     weight = 1
   [languages.zh-cn.params]
     subtitle = "把有限的生命周期投入到无限的程序逻辑中去"
+  [languages.en]
+    languageCode = 'en'
+    languageName = 'English'
+    title = 'The Scope of Localvar'
+    weight = 2
+  [languages.en.params]
+    subtitle = "Investing finite lifetime into infinite program logic"
 
 [permalinks]
   [permalinks.page]
