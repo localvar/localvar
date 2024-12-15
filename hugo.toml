@@ -1,23 +1,27 @@
 baseURL = 'https://blog.localvar.cn/'
 theme = 'mainroad'
 paginate = 10
-languageCode = 'zh-CN'
+languageCode = 'zh-cn'
 hasCJKLanguage = true
 defaultContentLanguage = 'zh-cn'
 
 [menu]
   [[menu.main]]
     name = '文章'
-    pageRef = '/posts'
+    url = '/posts/'
     weight = 10
   [[menu.main]]
     name = '留言本'
-    pageRef = '/guestbook'
+    url = '/guestbook/'
     weight = 20
   [[menu.main]]
     name = '关于'
-    pageRef = '/about'
+    pageRef = '/about/'
     weight = 30
+  [[menu.main]]
+    name = 'English'
+    url = '/en/'
+    weight = 40
   [[menu.footer]]
     name = '京ICP备17043225号-1'
     url = 'https://beian.miit.gov.cn/'
@@ -64,7 +68,7 @@ defaultContentLanguage = 'zh-cn'
 
 [languages]
   [languages.zh-cn]
-    languageCode = 'zh-CN'
+    languageCode = 'zh-cn'
     languageName = '简体中文'
     title = '局部变量的作用域'
     weight = 1
@@ -77,6 +81,29 @@ defaultContentLanguage = 'zh-cn'
     weight = 2
   [languages.en.params]
     subtitle = "Investing finite lifetime into infinite program logic"
+    copyright = 'Bomin Zhang'
+    description = "Blog of Bomin Zhang"
+    [languages.en.params.author]
+      name = "Bomin Zhang"
+  [[languages.en.menu.main]]
+    name = 'Posts'
+    url = '/en/posts/'
+    weight = 10
+  [[languages.en.menu.main]]
+    name = 'Guestbook'
+    url = '/en/guestbook/'
+    weight = 20
+  [[languages.en.menu.main]]
+    name = 'About'
+    url = '/en/about/'
+    weight = 30
+  [[languages.en.menu.main]]
+    name = '中文'
+    url = '/'
+    weight = 40
+  [[languages.en.menu.footer]]
+    name = '京ICP备17043225号-1'
+    url = 'https://beian.miit.gov.cn/'
 
 [permalinks]
   [permalinks.page]

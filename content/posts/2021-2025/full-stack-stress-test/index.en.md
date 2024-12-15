@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "With the improvement of hardware performance, the big increment in network bandwidth, and the rapid growth of data volume, traditional stand-alone applications can no longer meet the needs of modern enterprises. Instead, distributed-based software systems have emerged. These software systems provide powerful computing capabilities while introducing complexity. This article introduces a novel cloud-native architecture-based end-to-end stress testing method for production lines. By ensuring business consistency, data consistency, resource consistency, and various isolation levels, the accuracy of test results and the security of production systems are guaranteed. Additionally, we provide a detailed explanation of how to use Shadow Service for stress testing in a simplified order payment scenario."
 +++
 
+[中文版]({{< ref path="full-stack-stress-test.md" lang="zh-cn" >}})
+
 **NOTE**: Co-authored with [Hao Chen](https://www.coolshell.cn/), has been published in "Modern Information Technology", Vol 11, 2023.
 
 With the increase of hardware performance, network bandwidth, and user data, traditional stand-alone applications are being replaced by software systems based on the network.

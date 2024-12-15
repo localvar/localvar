@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "本文介绍了使用 WebAssembly 扩展后端应用的具体过程以及常见问题的解决方法。"
 +++
 
+[English Version]({{< ref path="wasm-at-backend.md" lang="en" >}})
+
 # 1. WebAssembly 简介
 
 随着互联网的发展，越来越多的应用借助 Javascript 转到了 Web 端，但人们也发现，随着移动互联网的兴起，需要把大量的应用迁移到手机端，随着手端的应用逻辑越来越复杂，Javascript 的解析、编译消耗了大量时间，导致页面加载慢，应用性能低下的很多问题。
@@ -14,7 +16,7 @@ summary = "本文介绍了使用 WebAssembly 扩展后端应用的具体过程�
 
 > WebAssembly（简写为 Wasm）是一种用于堆栈式虚拟机的二进制指令格式。它的设计目的，是成为其它编程语言的一个可移植的编译目标，以便在 Web 上布署客户端和服务端应用。
 
-这是 WebAssembly 官网上的定义，从这个定义中我们可以知道，WebAssembly 是一种二进制指令格式。但在日常的讨论中，我们也常常把 WebAssembly Text Format 称为 WebAssembly，而这种文本格式实际上是一种编程语言。
+这是 [WebAssembly 官网](https://webassembly.org)上的定义，从这个定义中我们可以知道，WebAssembly 是一种二进制指令格式。但在日常的讨论中，我们也常常把 WebAssembly Text Format 称为 WebAssembly，而这种文本格式实际上是一种编程语言。
 
 正式发布后，WebAssembly 迎来了迅猛的发展，到 2017 年 11 月，Mozilla 宣布包括 Chrome、Firefox、Safari 等在内的所有主流浏览器都已经支持 WebAssembly，而根据 2021 年 7 月的数据，用户正在使用的浏览器中，已经有 94% 支持了 WebAssembly。
 
@@ -245,6 +247,6 @@ Easegress 是 MegaEase 开发的下一代流量型网关，具有云原生、高
 
 第三，通过嵌入其它语言的解释器进行扩展。这方面，Lua 本身就是为嵌入其它程序而设计的，具有相应的优势。但我们认为 Lua 也有两个缺点，一是本身表现力不够，不适合写复杂的业务逻辑；二是太小众，不是主流语言，有相关经验的程序员太少。所以，经过权衡，Easegress 最终选择了嵌入 WebAssembly，主要基于两点考虑：一是接近于原生代码的高性能；二是不限制用户的开发语言，用户可以使用自己喜欢或熟悉的语言开发业务逻辑。
 
-作为使用 WebAssembly 扩展业务逻辑的样例，我们之前已经发布了《使用 Easegress + WebAssembly 做秒杀》，欢迎大家阅读并向我们反馈更多的实际案例。
+作为使用 WebAssembly 扩展业务逻辑的样例，我们之前已经发布了[《使用 Easegress + WebAssembly 做秒杀》]({{<ref "flash-sale.md">}})，欢迎大家阅读并向我们反馈更多的实际案例。
 
 当然，选择了 WebAssembly 意味着我们需要开发多种语言的 SDK，目前已经完成了 [AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk) 的开发，相信在 MegaEase 和整个开源社区的共同努力下，我们支持的语言会越来越多。欢迎大家关注我们的[开源社区](https://github.com/megaease/)。 

@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "This article describes the process of using WebAssembly to extend a backend application and how to solve common problems."
 +++
 
+[中文版]({{< ref path="wasm-at-backend.md" lang="zh-cn" >}})
+
 # 1. WebAssembly Introduction
 
 With the evolution of the Internet, more and more applications have been migrated to the web with
@@ -354,9 +356,9 @@ relevant experience. Therefore, Easegress decide to embed WebAssembly, mainly ba
 considerations: one is the nearly native performance; the other is it is not restricting the user's
 development language, users can use their favorite or familiar language to develop business logic.
 
-As an example of extending business logic with WebAssembly, we have published "Handle Flash Sale
-With Easegress And WebAssembly". Please feel free to let us know if you have any feedback, and
-welcome to provide more use cases to us.
+As an example of extending business logic with WebAssembly, we have published [Handle Flash Sale
+With Easegress And WebAssembly]({{<ref "flash-sale.en.md">}}). Please feel free to let us know if
+you have any feedback, and welcome to provide more use cases to us.
 
 As I have mentioned above, choosing WebAssembly means that we need to develop SDKs for many
 languages. We have completed the development of the

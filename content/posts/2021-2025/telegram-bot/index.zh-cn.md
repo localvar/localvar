@@ -6,7 +6,9 @@ tags = ['其他', 'MegaEase']
 summary = "Easegress 2.0 版本大幅增强了流量编排功能，使用户无需编写任何代码，就可以通过编排多个 API 来实现一个超级 API。本文通过一个 Telegram 翻译机器人演示了这个功能。这个机器人可以自动将收到的消息翻译为中文、日文和英文，并且，除了文字消息，还支持翻译语音和图片消息。"
 +++
 
-[Easegress](https://github.com/megaease/easegress) 是 [MegaEase](https://megaease.cn/ 开发的新一代流量型网关产品，它完全架构于云原生技术之上，避免了传统反向代理在高可用、流量编排、监控、服务发现等方面的不足，具有云原生、高可用、动态流量编排、可观测、可扩展等特点。
+[English Version]({{< ref path="telegram-bot.en.md" lang="en" >}})
+
+[Easegress](https://github.com/megaease/easegress) 是 [MegaEase](https://megaease.cn/) 开发的新一代流量型网关产品，它完全架构于云原生技术之上，避免了传统反向代理在高可用、流量编排、监控、服务发现等方面的不足，具有云原生、高可用、动态流量编排、可观测、可扩展等特点。
 
 最近，Easegress 发布了 2.0 版本，再次大幅增强了流量编排功能，使用户无需编写任何代码，就可以通过编排多个 API 来实现一个超级 API。本文，我们会通过编排一个 Telegram 翻译机器人来演示一下这个功能。这个机器人可以自动将收到的消息翻译为中文、日文和英文，并且，除了文字消息，还支持翻译语音和图片消息。
 

@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "A flash sale is a discount or promotion offered by an eCommerce store for a short period. The quantity is limited, which often means the discounts are higher or more significant than run-of-the-mill promotions. This article illustrates how to leverage the [WasmHost Filter] of Easegress to protect the backend service in a flash sale."
 +++
 
+[中文版]({{< ref path="flash-sale.md" lang="zh-cn" >}})
+
 A flash sale is a discount or promotion offered by an eCommerce store for a short period. The quantity is limited, which often means the discounts are higher or more significant than run-of-the-mill promotions.
 
 However, significant discounts, limited quantity, and a short period leading to a significant high traffic spike, which often results in slow service, denial of service, or even downtime.

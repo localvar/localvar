@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "Easegress v2.0 is released with an enhanced traffic orchestration feature, which allows users to implement a super API by orchestrating multiple APIs without writing any code. This article demonstrates this feature by building a Telegram translation bot. This bot can automatically translate incoming messages into Chinese, Japanese, and English, and, in addition to text messages, it also supports translating voice and photo messages."
 +++
 
+[中文版]({{< ref path="telegram-bot.md" lang="zh-cn" >}})
+
 [Easegress](https://github.com/megaease/easegress) is the next-generation traffic-based gateway product developed by [MegaEase](https://megaease.com/). It is completely architected on top of cloud-native technology, avoiding the shortcomings of traditional reverse proxy in terms of high availability, traffic orchestration, monitoring, service discovery, etc.
 
 We released Easegress v2.0 recently, with another significant enhancement to traffic orchestration, allowing users to implement a super API by orchestrating multiple APIs without writing any code. This article will demonstrate this feature by building a Telegram translation bot. This bot can automatically translate incoming messages into Chinese, Japanese, and English, and, in addition to text messages, it also supports translating voice and photo messages.

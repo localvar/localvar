@@ -6,6 +6,8 @@ tags = ['其他', 'MegaEase']
 summary = "“秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量往往很少，但在巨大折扣的吸引力下，会在短暂的时间导致流量请求的激增，这往往会导致服务缓慢、拒绝服务，甚至宕机。 本文介绍了如何利用 Easegress 的 WasmHost 过滤器来保护秒杀中的后端服务。"
 +++
 
+[English Version]({{< ref path="flash-sale.en.md" lang="en" >}})
+
 “秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量往往很少，但在巨大折扣的吸引力下，会在短暂的时间导致流量请求的激增，这往往会导致服务缓慢、拒绝服务，甚至宕机。
 
 本文介绍了如何利用 [WasmHost 过滤器](https://github.com/megaease/easegress/blob/main/docs/03.Advanced-Cookbook/3.07.WasmHost.md) 来保护秒杀中的后端服务。[WebAssembly](https://webassembly.org/) 代码是通过使用 [Easegress AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk)，以 [AssemblyScript](https://www.assemblyscript.org/) 语言（类似于 TypeScript）编写的。
