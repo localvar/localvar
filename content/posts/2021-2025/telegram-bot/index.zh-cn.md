@@ -6,7 +6,7 @@ tags = ['其他', 'MegaEase']
 summary = "Easegress 2.0 版本大幅增强了流量编排功能，使用户无需编写任何代码，就可以通过编排多个 API 来实现一个超级 API。本文通过一个 Telegram 翻译机器人演示了这个功能。这个机器人可以自动将收到的消息翻译为中文、日文和英文，并且，除了文字消息，还支持翻译语音和图片消息。"
 +++
 
-[English Version]({{< ref path="telegram-bot.en.md" lang="en" >}})
+[English Version]({{< ref path="telegram-bot.md" lang="en" >}})
 
 [Easegress](https://github.com/megaease/easegress) 是 [MegaEase](https://megaease.cn/) 开发的新一代流量型网关产品，它完全架构于云原生技术之上，避免了传统反向代理在高可用、流量编排、监控、服务发现等方面的不足，具有云原生、高可用、动态流量编排、可观测、可扩展等特点。
 
@@ -17,7 +17,7 @@ summary = "Easegress 2.0 版本大幅增强了流量编排功能，使用户无�
 由于机器人需要接收 Telegram 消息通知，并调用第三方 API，所以我们需要提前准备好以下各项：
 
 * 根据[这篇文档](https://github.com/megaease/easegress/blob/main/README.zh-CN.md#%E5%AE%89%E8%A3%85-easegress)安装好 Easegress 的最新版本，并请确保外部应用至少可以通过 80、88、443 或 8443 端口中的一个访问到这个 Easegress 实例。  
-* 根据[这篇文档](https://core.telegram.org/bots#3-how-do-i-create-a-bot)创建一个 Telegram 机器人，设置好名字（本文中使用的是 EaseTranslateBot），记下它的 token，并[设置一个 Webhook](https://core.telegram.org/bots/api#setwebhook)，Webhook 的地址指向上一步中安装的 Easegress 实例。我们的机器人将通过这个 Webhook 接收新消息通知。  
+* 根据[这篇文档](https://core.telegram.org/bots#3-how-do-i-create-a-bot)创建一个 Telegram 机器人，设置好名字（本文使用的是 EaseTranslateBot），记下它的 token，并[设置一个 Webhook](https://core.telegram.org/bots/api#setwebhook)，Webhook 的地址指向上一步中安装的 Easegress 实例。我们的机器人将通过这个 Webhook 接收新消息通知。  
 * AWS 的 Access Key ID 和 Access Key Secret，并确保可以通过这个 Access Key 使用 AWS 的翻译 API。  
 * Google Cloud 的 Token，并确保可以通过这个 Token 使用 Google Cloud 的语音识别（Speech Recognize）API 和 OCR(Image Annotation）API。
 
@@ -31,9 +31,9 @@ summary = "Easegress 2.0 版本大幅增强了流量编排功能，使用户无�
 
 收到 Telegram 服务器通过 Webhook 发来的新消息通知后，机器人首先检查消息类型，并分别进行如下处理：
 
-* **文字消息：**直接提取消息文本；  
-* **语音消息：**这种情况下，消息体中只有语音文件的 ID，所以需要先调用 Telegram 的 API 将 ID 转换成文件地址，然后下载这个文件，并把其内容发给 Google 语音识别服务，将其转换为文本；  
-* **图片消息：**前半部分基本与语音消息相同，但会将图片内容发给 Google 的 Image Annotation 服务，将其转换为文本。
+* **文字消息**：直接提取消息文本；  
+* **语音消息**：这种情况下，消息体中只有语音文件的 ID，所以需要先调用 Telegram 的 API 将 ID 转换成文件地址，然后下载这个文件，并把其内容发给 Google 语音识别服务，将其转换为文本；  
+* **图片消息**：前半部分基本与语音消息相同，但会将图片内容发给 Google 的 Image Annotation 服务，将其转换为文本。
 
 经过以上处理，三种消息就都变成了文本，之后，就可以调用 AWS 的翻译服务，将其依次翻译为不同的目标语言，本文示例使用的目标语言是中文、日文和英文。
 
@@ -47,7 +47,6 @@ flow:
 # 我们把 ResponseBuilder 放在最前面以确保能够返回应答。
 - filter: buildFinalResponse
 
-
 # 检测消息类型，并跳转到对应的位置。
 - filter: detectMessageType
   jumpIf:
@@ -56,14 +55,12 @@ flow:
     result2: processPhoto            # 图片
     "": END                          # 忽略消息，直接结束处理流程
 
-
 # 文字消息
 - filter: requestBuilderExtractText
   alias: processText                 # 别名
   namespace: extract                 # 所属命名空间
   jumpIf:                            # 条件跳转，如果一切正常就开始翻译，
     "": translate                    # 否则会自动结束处理流程
-
 
 # 语音消息
 - filter: requestBuilderGetVoiceFile # 构造将语音文件 ID 转换成文件路
@@ -84,7 +81,6 @@ flow:
   jumpIf:                            # 条件跳转，如果一切正常就开始翻译，
     "": translate                    # 否则会自动结束处理流程
 
-
 # 图片消息（流程与语音消息基本相同）
 - filter: requestBuilderGetPhotoFile
   alias: processPhoto
@@ -102,7 +98,6 @@ flow:
 - filter: requestBuilderPhotoText    # 不使用条件跳转，正常进入翻译流程
   namespace: extract
 
-
 # 翻译为中文
 - filter: requestBuilderTranslate    # 构造调用翻译 API 的请求
   alias: translate
@@ -112,7 +107,6 @@ flow:
 - filter: proxyTranslate             # 发送请求，得到翻译结果
   namespace: zh
 
-
 # 翻译为英文（流程与中文翻译相同）
 - filter: requestBuilderTranslate
   namespace: en
@@ -121,7 +115,6 @@ flow:
 - filter: proxyTranslate
   namespace: en
 
-
 # 翻译为日文（流程与中文翻译相同）
 - filter: requestBuilderTranslate
   namespace: ja
@@ -129,7 +122,6 @@ flow:
   namespace: ja
 - filter: proxyTranslate
   namespace: ja
-
 
 # 回复，将翻译结果发送给 Telegram
 - filter: requestBuilderReply        # 发送消息回复的 API 的请求
@@ -161,7 +153,7 @@ data:
 
 # 4. Filter
 
-在 Easegress 中，Filter 是处理流量的组件，具体到本文示例，Pipeline  负责编排流程，检测消息类型、调用第三方 API 等工作则都是由 Filter 完成的，下面分别介绍下示例中用到的主要 Filter。
+在 Easegress 中，Filter 是处理流量的组件，具体到本文示例，Pipeline 负责编排流程，检测消息类型、调用第三方 API 等工作则都是由 Filter 完成的，下面分别介绍下示例中用到的主要 Filter。
 
 ## 4.1 后端代理（Proxy）
 
@@ -175,7 +167,6 @@ pools:
 - servers:
   - url: https://vision.googleapis.com
 
-
 # Google Speech Recognize
 name: proxySpeechRecognize
 kind: Proxy
@@ -183,14 +174,12 @@ pools:
 - servers:
   - url: https://speech.googleapis.com
 
-
 # AWS Translate
 name: proxyTranslate
 kind: Proxy
 pools:
 - servers:
   - url: https://translate.us-east-2.amazonaws.com
-
 
 # Telegram
 name: proxyTelegram
@@ -233,7 +222,6 @@ template: |
   method: GET
   url: https://api.telegram.org/bot{YOUR BOT TOKEN}/getFile?file_id={{$msg.voice.file_id}}
 
-
 # Convert image(photo) file ID to path
 kind: RequestBuilder
 name: requestBuilderGetPhotoFile
@@ -241,7 +229,6 @@ template: |
   {{$msg := or .requests.DEFAULT.JSONBody.message .requests.DEFAULT.JSONBody.channel_post}}
   method: GET
   url: https://api.telegram.org/bot{YOUR BOT TOKEN}/getFile?file_id={{(last $msg.photo).file_id}}
-
 
 # Download(read) file
 kind: RequestBuilder
@@ -278,7 +265,6 @@ template: |
         "content": "{{.responses.extract.Body | b64enc}}"
       }
     }
-
 
 # OCR
 kind: RequestBuilder
@@ -317,7 +303,6 @@ template: |
        "text": "{{$msg.text | jsonEscape}}"
     }
 
-
 # Extract Text From Voice(Speech) Message
 kind: RequestBuilder
 name: requestBuilderSpeechText
@@ -326,7 +311,6 @@ template: |
   {{$result = index $result.alternatives 0}}
   body: |
     {"text": "{{$result.transcript | jsonEscape}}"}
-
 
 # Extract Text From Image(Photo) Message
 kind: RequestBuilder
@@ -359,7 +343,6 @@ template: |
        "TargetLanguageCode": "{{.namespace}}",
        "Text": "{{.requests.extract.JSONBody.text | jsonEscape}}"
     }
-
 
 # Sign the request
 name: signAWSRequest

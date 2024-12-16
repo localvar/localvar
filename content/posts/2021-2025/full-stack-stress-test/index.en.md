@@ -3,7 +3,7 @@ title = 'Full-stack Stress Test On Production'
 date = 2022-03-03T13:00:00+08:00
 categories = ['技术']
 tags = ['其他', 'MegaEase']
-summary = "With the improvement of hardware performance, the big increment in network bandwidth, and the rapid growth of data volume, traditional stand-alone applications can no longer meet the needs of modern enterprises. Instead, distributed-based software systems have emerged. These software systems provide powerful computing capabilities while introducing complexity. This article introduces a novel cloud-native architecture-based end-to-end stress testing method for production lines. By ensuring business consistency, data consistency, resource consistency, and various isolation levels, the accuracy of test results and the security of production systems are guaranteed. Additionally, we provide a detailed explanation of how to use Shadow Service for stress testing in a simplified order payment scenario."
+summary = "With the improvement of hardware performance, the big increment in network bandwidth, and the rapid growth of data volume, traditional stand-alone applications can no longer meet the needs of modern enterprises. Instead, distributed-based software systems have emerged. These software systems provide powerful computing capabilities while introducing complexity. This article introduces Shadow Service, a novel cloud-native end-to-end stress testing method for production environments. By ensuring business consistency, data consistency, resource consistency, and various isolation levels, the accuracy of test results and the security of production systems are guaranteed. Additionally, we provide a detailed explanation of how to use Shadow Service for stress testing in a simplified order payment scenario."
 +++
 
 [中文版]({{< ref path="full-stack-stress-test.md" lang="zh-cn" >}})
@@ -28,9 +28,9 @@ Because it is a test environment, people will keep deploying the test versions o
 
 Moreover, because the cost is so high, I don't think any company can build such a test environment for each development team, that is, all teams must share the same environment. So, if there's not an excellent coordination mechanism, the tests conducted by different teams will also affect the test results.
 
-Test data is another issue. The test results will not be reliable if the data of the test environment is not close enough to (or even identical with) the production environment. For example, in a Twitter-like system, users like me generally only have a few dozen or hundreds of followers, so it will be fairly easy to notify all my followers in a second when I post a message. But for a celebrity with millions of followers, the situation will be very different. Therefore, we cannot simply use simulated data for testing.
+Test data is another issue. The test results will not be reliable if the data of the test environment is not close enough to (or even identical with) the production environment. For example, in a Twitter-like system, users like me generally only have a few dozen or hundreds of followers, so it will be fairly easy to notify all my followers in a second after I post a message. But for a celebrity with millions of followers, the situation will be very different. Therefore, we cannot simply use simulated data for testing.
 
-To make the test results reliable, the best way is to import complete production data into the test environment, it looks like an easy job because we can do this by a simple database backup and restore. But there's a lot of sensitive data in the production environment, copying it to the test environment will greatly increase the risk of data leakage.
+To make the test results reliable, the best way is to import all production data into the test environment, it looks like an easy job because we can do this by a simple database backup and restore. But there's a lot of sensitive data in the production environment, copying it to the test environment will greatly increase the risk of data leakage.
 
 # Issues with the production environment
 
@@ -48,19 +48,19 @@ After the user module, the logic goes to the order module, at this time, we may 
 
 To distinguish between normal orders and test orders, the user module is required to take some additional steps in the orange box, such as adding annotations to the order. However, in a complex system, it is not easy for the user module to know all the modules that the subsequent process will go through. So we have to spend a lot of effort to ensure the test state is correctly transmitted between modules to avoid disturbing the production logic. And, we also need to consider things like accessing which dataset, mocking a third-party dependency in the orange box.
 
-Very obviously, the workload required for this modification of business logic is proportional to the number of function points. But in addition to this, the more serious problem is that after the hard work, no one can guarantee that all the changes that need to make have been made and were made correctly, and if it happens, the production data will be corrupted.
+Very obviously, the workload required for this modification of business logic is proportional to the number of features. But in addition to this, the more serious problem is that after the hard work, no one can guarantee that all the changes that need to make have been made and were made correctly, and if not, the production data will be corrupted.
 
 ## The Solution
 
 As can be seen from the analysis above, a full-stack stress test in a dedicated testing environment is both costly and unreliable, while a test in the production environment is both heavy and risky. Therefore, [MegaEase](https://www.megaease.com/) believes that a completely new approach must be taken, and the keys of this approach are 3-consistency and 4-isolation.
 
-The 3-consistency are business consistency, data consistency, and resource consistency. That is to say, the test environment and the production environment should be identical, this is a fundamental requirement for getting a reliable result. Realistically, 100% consistency is not always possible, for example, we usually can't ask a third party to cooperate with us to make a test, and we have to mock the third-party dependency in this case. But we still need to do our best to ensure the consistency of the two environments.
+The 3-consistency are business consistency, data consistency, and resource consistency. That is to say, the test environment and the production environment should be identical, this is a fundamental requirement for getting a reliable result. Realistically, 100% consistency is not always possible, for example, we usually can't ask a third party to cooperate with us to make a test, thus we have to mock the third-party dependency. But we still need to do our best to ensure the consistency of the two environments.
 
 The 4-isolation are business isolation, data isolation, traffic isolation, and resource isolation. These isolations are all designed to completely separate the production and test environment to avoid their mutual impact.
 
 The 3-consistency focuses on the reliability of the test result, while the 4-isolation ensures that the test process does not corrupt the production environment.
 
-Based on these principles, MegaEase implements the Shadow Service feature in EaseMesh. By using this feature, users can easily replica all services in the production environment, and except for a shadow tag, these replicas are the same as the original service, thus ensuring business consistency and business isolation. At the same time, Shadow Service creates a Canary rule automatically which forwards requests with X-Mesh-Shadow: shadow header to the service replica and other requests to the original service for traffic isolation.
+Based on these principles, MegaEase implements the Shadow Service feature in EaseMesh. By using this feature, users can easily replica all services in the production environment, and except for a shadow tag, these replicas are the same as the original service, thus ensuring business consistency and business isolation. At the same time, Shadow Service creates a Canary rule automatically which forwards requests with `X-Mesh-Shadow: shadow` header to the service replica and other requests to the original service for traffic isolation.
 
 For data isolation, Shadow Service can replace the connection information of various middlewares (including MySQL, Kafka, Redis, etc.) according to the configuration, and change the destination of data requests, while users can make a copy of the production data as test data to ensure data consistency.
 
@@ -74,7 +74,7 @@ The system is deployed into Kubernetes via [EaseMesh](https://github.com/megaeas
 
 ![2](2.png)
 
-To test it, we need to first create a copy of the database. This step can be done through the backup and recovery function of MySQL. Because both data copies are in the same security domain, it is no need to desensitize the data.
+To test it, we need to first create a copy of the database. This step can be done through a backup and recovery of MySQL. Because both data copies are in the same security domain, it is no need to desensitize the data.
 
 ![3](3.png)
 
@@ -107,7 +107,7 @@ metadata:
 spec:  
   enabled: false  
   rules:  
-    \- match:  
+    - match:  
         pathPrefix: /  
         headers:  
           X-Mesh-Shadow:  
@@ -118,7 +118,7 @@ spec:
       body: '{"result":"succeeded"}'  
 ```
 
-This completes the creation of the test system, to which we can send a request with an X-Mesh-Shadow: shadow header for stress testing. The final system architecture looks like below.
+This completes the creation of the test system, to which we can send a request with an `X-Mesh-Shadow: shadow` header for stress testing. The final system architecture looks like below.
 
 ![5](5.png)
 
@@ -126,7 +126,7 @@ This completes the creation of the test system, to which we can send a request w
 
 Compared to traditional testing methods, stress testing with Shadow Service has clear advantages in the following five areas:
 
-* **Zero code change**: everything is done via configuration, no need to modify any code and lower risks to create new bugs.  
+* **Zero code change**: everything is done via configuration, no need to modify any code and lower the risks to create new bugs.  
 * **Low cost**: when using cloud-based servers, the hardware resources used for testing can be applied just before the test and released immediately after the test, you only need to pay for what you need.  
 * **Business logic is basically the same as the production environment**: Except for a few services that are mocked, the test system is completely consistent with the production system, avoiding inaccuracies caused by differences in business logic to the greatest extent.  
 * **Test with production data**: The data of the test system and the production system are completely consistent, which ensures the reliability of the test results.  

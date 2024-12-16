@@ -3,18 +3,18 @@ title = '使用 Easegress 和 WebAssembly 做秒杀'
 date = 2021-09-03T20:54:00+08:00
 categories = ['技术']
 tags = ['其他', 'MegaEase']
-summary = "“秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量往往很少，但在巨大折扣的吸引力下，会在短暂的时间导致流量请求的激增，这往往会导致服务缓慢、拒绝服务，甚至宕机。 本文介绍了如何利用 Easegress 的 WasmHost 过滤器来保护秒杀中的后端服务。"
+summary = "“秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量一般很少，但巨大的折扣带来的流量请求激增往往会导致响应缓慢、拒绝服务，甚至宕机。 本文介绍了如何利用 Easegress 的 WasmHost 过滤器来保护秒杀中的后端服务。"
 +++
 
 [English Version]({{< ref path="flash-sale.en.md" lang="en" >}})
 
-“秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量往往很少，但在巨大折扣的吸引力下，会在短暂的时间导致流量请求的激增，这往往会导致服务缓慢、拒绝服务，甚至宕机。
+“秒杀”是一种经常被各家电商采用的，在短时间内提供超高折扣的促销方式。参与秒杀的商品数量一般很少，但巨大的折扣带来的流量请求激增往往会导致响应缓慢、拒绝服务，甚至宕机。
 
-本文介绍了如何利用 [WasmHost 过滤器](https://github.com/megaease/easegress/blob/main/docs/03.Advanced-Cookbook/3.07.WasmHost.md) 来保护秒杀中的后端服务。[WebAssembly](https://webassembly.org/) 代码是通过使用 [Easegress AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk)，以 [AssemblyScript](https://www.assemblyscript.org/) 语言（类似于 TypeScript）编写的。
+本文介绍了如何利用 [WasmHost 过滤器](https://github.com/megaease/easegress/blob/main/docs/03.Advanced-Cookbook/3.07.WasmHost.md) 来保护秒杀中的后端服务。[WebAssembly](https://webassembly.org/) 代码是使用 [Easegress AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk)，以 [AssemblyScript](https://www.assemblyscript.org/) 语言（类似于 TypeScript）编写的。
 
-在开始前，需要介绍一下为什么会是这样的组合：Easegress 作为流量网关更多的是需要负责控制逻辑，而秒杀这样的业务逻辑则更多的会有很定制化的东西。通过 WebAssembly 写业务逻辑，可以在运行时动态加载，而且 WebAssembly 的代码有足够强的性能和安全性，所以，在安全、高性能和定制化扩展上，这个组合能够提供很好的解决方案。
+在开始前，需要介绍一下为什么是这样的组合：Easegress 作为流量网关主要负责控制逻辑，而秒杀这样的业务逻辑则会有更多的定制化内容。通过 WebAssembly 写业务逻辑，可以在运行时动态加载，而且 WebAssembly 的代码有足够强的性能和安全性。所以，在安全、性能和定制化三个方面，这个组合能够提供很好的解决方案。
 
-在我们开始之前，请确保你的环境已经安装了最新版本的 [Git](https://git-scm.com/)、[Golang](https://golang.org)、[Node.js](https://nodejs.org/) 和它的包管理器 [npm](https://www.npmjs.com/)。另外，虽然不是必须，但如果你还具备编写和使用 TypeScript 模块的基本知识就更好了，因为 AssemblyScript 与 TypeScript 非常像。
+在我们开始之前，请确保你的环境已经安装了最新版本的 [Git](https://git-scm.com/)、[Golang](https://golang.org)、[Node.js](https://nodejs.org/) 和它的包管理器 [npm](https://www.npmjs.com/)。另外，虽然不是必须，但如果你还具备编写和使用 TypeScript 程序的基本知识就更好了，因为 AssemblyScript 与 TypeScript 非常像。
 
 注意：默认情况下，Easegress 中没有包含 WasmHost 过滤器，要启用它，需要用下面的命令构建 Easegress。
 
@@ -44,7 +44,7 @@ $ npm init
 $ npm install --save-dev assemblyscript
 ```
 
-4）安装完成后，我们可以在刚刚初始化的 node module的目录中，使用编译器提供的脚手架实用程序来快速设置好这个 AssemblyScript 项目：
+4）安装完成后，我们可以在刚刚初始化的 node module 的目录中，使用编译器提供的脚手架实用程序来快速设置好这个 AssemblyScript 项目：
 
 ```bash
 $ npx asinit .
@@ -108,7 +108,7 @@ rules:
     backend: flash-sale-pipeline' | egctl create -f -
 ```
 
-再创建一个包含 WasmHost 过滤器的Pipeline —— `flash-sale-pipeline`：
+再创建一个包含 WasmHost 过滤器的 Pipeline —— `flash-sale-pipeline`：
 
 ```bash
 $ echo '
@@ -252,7 +252,7 @@ sold out.
 
 上面，我们以 40% 的可能性收到售罄的消息 —— sold out。请注意，本示例中的 blockRatio 为 0.4，仅仅只是为了演示。而在实践中，具体需要阻止多少比例的用户，还需要知道参与用户的总数，否则的话，随机的比例设的过大或是过小都不好。
 
-# 4. 只要能进来就永远能进来
+# 4. 让幸运用户一直幸运
 
 从业务的角度来看，我们允许某个用户进入后，就应该始终允许该用户进入；但是从上一步代码的逻辑来看，如果用户再次访问秒杀URL，则该请求可能会被阻止。
 
@@ -262,9 +262,9 @@ sold out.
 
 然而，由于过滤器配置中的 `maxConcurrency` 选项，在代码中简单的使用 Set 或 Map 来存储所有幸运用户解决不了我们面临的问题。
 
-`maxConcurrency` 是 WasmHost 过滤器中的 WebAssembly 虚拟机的数量，由于 WebAssembly的安全性设计，两个虚拟机即使执行的是同一份代码，也不能共享数据。也就是说，在VM1允许用户进入后，如果用户的下一个请求是由VM2处理的，仍可能被阻止。当Easegress被布署为一个集群时，这种情况也可能发生。
+`maxConcurrency` 是 WasmHost 过滤器中的 WebAssembly 虚拟机的数量，由于 WebAssembly的安全性设计，两个虚拟机即使执行的是同一份代码，也不能共享数据。也就是说，在 VM1 允许用户进入后，如果用户的下一个请求是由 VM2 处理的，仍可能被阻止。当 Easegress 被布署为一个集群时，这种情况会更加常见。
 
-为了克服这个问题，Easegress 提供了访问共享数据的API。export * from'{EASEGRESS_SDK_PATH}/easegress/proxy'
+为了克服这个问题，Easegress 提供了访问共享数据的 API。
 
 ```typescript
 export * from '{EASEGRESS_SDK_PATH}/easegress/proxy'
@@ -445,7 +445,7 @@ filters:
 
 ## 6.2 管理共享数据
 
-正如我们在“只要能进来就永远能进来”中看到的那样，共享数据非常有用，但当我们复用已有代码和配置来处理新的秒杀活动时，遗留的数据可能会造成问题。Easegress提供了管理这些数据的命令。
+正如我们在“让幸运用户一直幸运”中看到的那样，共享数据非常有用，但当我们复用已有代码和配置来处理新的秒杀活动时，遗留的数据可能会造成问题。Easegress 提供了管理这些数据的命令。
 
 我们可以查看当前数据（其中 flash-sale-pipeline 是 pipeline 名称，wasm 是过滤器名称）：
 
@@ -478,10 +478,8 @@ $ egctl wasm list-data flash-sale-pipeline wasm
 {}
 ```
 
-好了，上面就是整个技术的细节，你可以使用这些代码自由的扩展你的业务逻辑。不过，需要注意的是，上面只是一个演示，真正的秒杀方案还要更复杂，因为还需要过滤爬虫以及一些“羊毛党”，如果需要更为专业的秒杀方案，欢迎联系我们。
+好了，上面就是所有的技术细节，你可以使用这些代码自由的扩展你的业务逻辑。不过，需要注意的是，上面只是一个演示，真正的秒杀方案还要更复杂，因为还需要过滤爬虫以及一些“羊毛党”，如果需要更为专业的秒杀方案，欢迎联系我们。
 
 # 7. 总结
 
-利用 WebAssembly 的安全、高性能和实时动态加载的能力，我们不仅可以在网关上做秒杀这样的高并发业务， 甚至可以实现一些更复杂业务逻辑支撑。 因为，WebAssembly 可以复用多种高级语言（如：Javascript，C/C++, Rust, Python, C# 等）的特性加持下， 让 Easegress 在高性能分布式架构下有了更大的想像和发挥的空间，并让流量编排的逻辑可以被更丝滑的运行和高效运维。
-
-最后，欢迎大家关注我们的[开源项目](https://github.com/megaease)。
+利用 WebAssembly 的安全、高性能和实时动态加载的能力，我们不仅可以在网关上做秒杀这样的高并发业务， 甚至可以实现一些更复杂的业务逻辑。 而 WebAssembly 可以复用多种高级语言（如：Javascript，C/C++, Rust, Python, C# 等）的特性， 也让 Easegress 在高性能分布式架构下有了更大的想像和发挥的空间。

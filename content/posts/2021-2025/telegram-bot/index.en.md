@@ -16,24 +16,24 @@ We released Easegress v2.0 recently, with another significant enhancement to tra
 
 Since the bot needs to receive Telegram message notifications and call third-party APIs, we must prepare the following in advance:
 
-* Install the latest version of Easegress according to [this document](https://github.com/megaease/easegress#setting-up-easegress) and make sure that external applications can access the Easegress instance on at least one of ports 80, 88, 443, or 8443\.  
-* Create a Telegram bot by following [this document](https://core.telegram.org/bots#3-how-do-i-create-a-bot), set its name (EaseTranslateBot is used in this article), write down its token, and [set up a Webhook](https://core.telegram.org/bots/api#setwebhook) that points to the Easegress instance installed in the previous step. Our bot will receive notifications of new messages through this Webhook.  
-* AWS Access Key ID and Access Key Secret, and ensure that you can use the AWS translation API with this Access Key.  
+* Install the latest version of Easegress according to [this document](https://github.com/megaease/easegress#setting-up-easegress) and make sure that external applications can access the Easegress instance on at least one of ports 80, 88, 443, or 8443\.
+* Create a Telegram bot by following [this document](https://core.telegram.org/bots#3-how-do-i-create-a-bot), set its name (EaseTranslateBot is used in this article), write down its token, and [set up a Webhook](https://core.telegram.org/bots/api#setwebhook) that points to the Easegress instance installed in the previous step. Our bot will receive notifications of new messages through this Webhook.
+* AWS Access Key ID and Access Key Secret, and ensure that you can use the AWS translation API with this Access Key. 
 * Google Cloud's Token and ensure that you can use Google Cloud's Speech Recognize API and OCR (Image Annotation) API with this Token.
 
-It is fine for you to use other vendors' translation, speech recognition, or OCR APIs, but this will require you to adapt the examples in the later sections accordingly.
+It is fine to use other vendors' translation, speech recognition, or OCR APIs, but this requires revise the examples in the later sections accordingly.
 
 # 2. How It Works
 
-The diagram below shows the workflow of this bot.
+The diagram below shows the workflow of this bot:
 
 ![1](1.png)
 
 Upon receiving a notification of a new message from the Telegram server via webhook, the bot first checks the message type and does the following accordingly:
 
-* **Text Message:** Extract message text directly；  
-* **Voice Message:** In this case, the message body only contains the ID of the voice file, so we need to call Telegram's API to convert the ID to a file address, then download the file and send its contents to Google's voice recognition service to convert it to text；  
-* **Photo Message:** Basically, this case is the same as the voice message, but the file content is sent to Google's Image Annotation service.
+* **Text Message**: Extract message text directly;
+* **Voice Message**: In this case, the message body only contains the ID of the voice file, so we need to call Telegram's API to convert the ID to a file address, then download the file and send its contents to Google's voice recognition service to convert it to text;
+* **Photo Message**: Basically, this case is the same as the voice message, but the file content is sent to Google's Image Annotation service.
 
 After the above processing, all three types of messages are turned into text, and then AWS translation service can be called to translate them into target languages, the target languages used in this example are Chinese, Japanese, and English.
 
@@ -156,7 +156,7 @@ where `zh`, `ja` and `en` are the language codes for Chinese, Japanese and Engli
 
 # 4. Filter
 
-In Easegress, Filter is the component that handles the traffic, specifically in this example, Pipeline is responsible for orchestrating the flow while detecting message types and calling third-party APIs are done by Filter.
+In Easegress, Filter is the component that handles the traffic, specifically in this example, pipeline is responsible for orchestrating the flow while detecting message types and calling third-party APIs are done by Filter.
 
 ## 4.1 Backend Proxies
 
@@ -271,7 +271,6 @@ template: |
       }
     }
 
-
 # OCR
 kind: RequestBuilder
 name: requestBuilderImageAnnotate
@@ -309,7 +308,6 @@ template: |
        "text": "{{$msg.text | jsonEscape}}"
     }
 
-
 # Extract Text From Voice(Speech) Message
 kind: RequestBuilder
 name: requestBuilderSpeechText
@@ -318,7 +316,6 @@ template: |
   {{$result = index $result.alternatives 0}}
   body: |
     {"text": "{{$result.transcript | jsonEscape}}"}
-
 
 # Extract Text From Photo Message
 kind: RequestBuilder
@@ -351,7 +348,6 @@ template: |
        "TargetLanguageCode": "{{.namespace}}",
        "Text": "{{.requests.extract.JSONBody.text | jsonEscape}}"
     }
-
 
 # Sign the request
 name: signAWSRequest

@@ -10,24 +10,24 @@ summary = "本文介绍了使用 WebAssembly 扩展后端应用的具体过程�
 
 # 1. WebAssembly 简介
 
-随着互联网的发展，越来越多的应用借助 Javascript 转到了 Web 端，但人们也发现，随着移动互联网的兴起，需要把大量的应用迁移到手机端，随着手端的应用逻辑越来越复杂，Javascript 的解析、编译消耗了大量时间，导致页面加载慢，应用性能低下的很多问题。
+随着互联网的发展，越来越多的应用借助 Javascript 转到了 Web 端。但人们也意识到，日益复杂的应用逻辑，导致大量时间被消耗在了 Javascript 的下载、解析、编译上，由此引发的加载缓慢、性能低下等问题进而导致了用户流失。
 
 为了解决这些问题，Mozilla 的工程师 Alon Zakai 在 2012 年提出了 Asm.js。之后，经过几年的发展，最终在 2015 年演变成了 WebAssembly。
 
 > WebAssembly（简写为 Wasm）是一种用于堆栈式虚拟机的二进制指令格式。它的设计目的，是成为其它编程语言的一个可移植的编译目标，以便在 Web 上布署客户端和服务端应用。
 
-这是 [WebAssembly 官网](https://webassembly.org)上的定义，从这个定义中我们可以知道，WebAssembly 是一种二进制指令格式。但在日常的讨论中，我们也常常把 WebAssembly Text Format 称为 WebAssembly，而这种文本格式实际上是一种编程语言。
+这是 [WebAssembly 官网](https://webassembly.org)上的定义，从这个定义中我们可以知道，WebAssembly 是一种二进制指令格式。但在日常的讨论中，我们也常常把 WebAssembly Text Format 称为 WebAssembly，而这种文本格式更像是一种编程语言。
 
 正式发布后，WebAssembly 迎来了迅猛的发展，到 2017 年 11 月，Mozilla 宣布包括 Chrome、Firefox、Safari 等在内的所有主流浏览器都已经支持 WebAssembly，而根据 2021 年 7 月的数据，用户正在使用的浏览器中，已经有 94% 支持了 WebAssembly。
 
-在得到了浏览器的广泛支持之后，一些重量级的应用也被逐渐被移植到了 Web 端，其中包括：
-- [Google Earth](https://earth.google.com/web/) - 一个3D的地图应用
-- [AutoCAD](https://web.autocad.com/) - 一个工业制图的应用
-- [Doom](http://www.continuation-labs.com/projects/d3wasm/) - 一个经典的第一人称的射击游戏
+得到了浏览器的广泛支持之后，一些重量级的应用也逐渐被被移植到了 Web 端，其中包括：
+- [Google Earth](https://earth.google.com/web/) - 一个3D地图应用
+- [AutoCAD](https://web.autocad.com/) - 一个工业制图应用
+- [Doom](http://www.continuation-labs.com/projects/d3wasm/) - 一个经典的第一人称射击游戏
 - [TensorFlow](https://blog.tensorflow.org/2020/03/introducing-webassembly-backend-for-tensorflow-js.html) - Google 开源的机器学习框架
 - ……
 
-这些案例也说明 WebAssembly 达到了自己的设计目标——在 Web 上部署桌面上的原生应用。而 WebAssembly 能够获得如此快速的发展，得益于它的几个特点：
+这些案例也说明，WebAssembly 达到了自己的设计目标——在 Web 上部署桌面原生应用。而 WebAssembly 能够获得如此快速的发展，得益于它的几个特点：
 
 - **性能好**：接近机器代码的运行速度，评测表明，WebAssembly 只比原生代码慢大约 10%。
 - **体积小**：加载速度快，WebAssembly 是一种紧凑的二进制格式，体积通常远小于完成同样功能的 Javascript 代码。
@@ -38,7 +38,7 @@ summary = "本文介绍了使用 WebAssembly 扩展后端应用的具体过程�
 
 在 WebAssembly 的官方定义中，“用于堆栈式虚拟机的”这个定语也非常值得关注，因为它导致 WebAssembly 这项最初以 Web 端为应用场景，以至于名字中都包含“Web”这个词的技术，慢慢进入了后端应用的领域。
 
-这是因为，从早期的 VMWare WorkStation、VirtualBox，到今天的 Docker，虚拟化技术一直是云计算的重要基础。所以，WebAssembly 作为一种具有很多特点的虚拟机代码格式，进入后端应用领域是必然趋势。Docker 的创始人 Solomon Hykes 在 2019 年说“如果 2008 年就有 WASM 和 WASI，我们就不用发明 Docker 了”，对其在后端应用的前景之看好，可见一斑。
+从早期的 VMWare WorkStation、VirtualBox，到今天的 Docker，虚拟化技术一直是云计算的重要基础。所以，作为一种具有很多特点的虚拟机代码格式，WebAssembly 进入后端应用领域是必然趋势。Docker 的创始人 Solomon Hykes 在 2019 年说“如果 2008 年就有 WASM 和 WASI，我们就不用发明 Docker 了”，对其在后端应用的前景之看好，可见一斑。
 
 当然，Solon Hykes 后来也说他的意思不是“WebAssembly 会取代 Docker”，这也是当今业界普遍的观点：WebAssembly 和 Docker 各有优势，互为补充。具体来说：
 - WebAssembly 程序的体积通常只有1M左右，而 Docker 镜像则动辄超过100M，所以 WebAssembly 具有快得多的加载速度。
@@ -54,9 +54,7 @@ summary = "本文介绍了使用 WebAssembly 扩展后端应用的具体过程�
 
 ![wasm](1.png)
 
-目前可选的 WebAssembly 运行时引擎有 [Wasmtime](https://wasmtime.dev/)、[WasmEdge](https://wasmedge.org/)、[WAVM](https://wavm.org/)、[Wasmer](https://wasmer.io/) 等很多种，各有自己的优势和缺陷。本文将以 Wasmtime 为例，介绍如何在以 Go 语言开发的宿主程序中嵌入 WebAssembly。
-
-嵌入 WebAssembly 运行时引擎并实例化 WebAssembly 模块本身非常简单，在省略错误处理的情况下，只要下面几行代码即可：
+目前可选的 WebAssembly 运行时引擎有 [Wasmtime](https://wasmtime.dev/)、[WasmEdge](https://wasmedge.org/)、[WAVM](https://wavm.org/)、[Wasmer](https://wasmer.io/) 等很多种，各有自己的优势和缺陷。本文将以 Wasmtime 为例，介绍如何在以 Go 语言开发的宿主程序中嵌入 WebAssembly，这本身非常简单，在省略错误处理的情况下，只要下面几行代码即可：
 
 ```go
 func createWasmVM(code []byte) {
@@ -69,7 +67,7 @@ func createWasmVM(code []byte) {
 }
 ```
 
-其中涉及了实际开发中需要了解的几个重要概念，简单介绍如下：
+但其中涉及了实际开发中需要了解的几个重要概念，简单介绍如下：
 
 - **引擎（engine）**：用于编译和管理模块的全局上下文。
 - **模块（module）**：编译后的 WebAssembly 模块。
@@ -81,7 +79,7 @@ func createWasmVM(code []byte) {
 
 ## 2.2. 宿主调用 WebAssembly
 
-假设我们的WebAssembly 程序中有一个名为 sum 的函数，接收两个整形变量作为参数，返回它们的和，则宿主程序可以使用下面的代码来调用这个函数：
+假设我们的 WebAssembly 程序中有一个名为 sum 的函数，接收两个整形变量作为参数，返回它们的和，则宿主程序可以使用下面的代码来调用这个函数：
 
 ```go
     fn := inst.GetExport(store, "sum").Func()
@@ -91,7 +89,7 @@ func createWasmVM(code []byte) {
 
 虽然不同的宿主开发语言和 WebAssembly 运行时引擎具体的调用方式有区别，但运行时引擎的文档一般都有相关说明，所以这一步照着文档做就好，没有难度。
 
-这里的难点在于，如何才能在 WebAssembly 程序中暴露出这个函数，以便宿主程序能找到并调用它。前面说过，只要有相应的编译器，各种语言都可以编译成 WebAssembly，但大多数语言设计时并没有考虑 WebAssembly 的需要，也就没有提供暴露函数的方法。所以这个问题只能通过特定编译器的非标准扩展来解决。也就是说，找到这个非标准扩展是解决问题最关键的一步。但也正由于“非标准”，所以相关的资料有时并不容易找到。
+这里的难点在于，如何才能在 WebAssembly 程序中暴露出这个函数，以便宿主程序能找到并调用它。前面说过，只要有相应的编译器，各种语言都可以编译成 WebAssembly，但大多数语言设计时并没有考虑 WebAssembly 的需要，也就没有提供暴露函数的方法。所以这个问题只能通过特定编译器的非标准扩展来解决。也就是说，找到这个非标准扩展是解决问题最关键的一步。但也正由于“非标准”，相关的资料有时并不容易找到。
 
 作为示例，下面给出的是使用 C/C++（编译器是 emscripten）和 AssemblyScript 时对外暴露函数的方法：
 
@@ -142,7 +140,7 @@ export function callHello(): void {
 
 宿主和 WebAssembly 程序相互调用对方的函数时，也需要传递参数和返回值，如果是整数等简单数据类型，直接传递即可。但当数据类型是字符串等复杂类型时，就会遇到新的问题，具体有两点：
 
-宿主程序和 WebAssembly 程序的开发语言一般并不相同，所以复杂参数的内存布局也不同，直接传递的话，接收方根本理解不了，也就没有办法使用。
+宿主程序和 WebAssembly 程序的开发语言一般并不相同，所以复杂参数的内存布局也不同，直接传递的话，接收方根本理解不了，也就无法使用。
 
 由于安全性设计，宿主程序和 WebAssembly 程序的内存是隔离开的，WebAssembly 程序访问不了宿主的内存。
 
@@ -237,9 +235,9 @@ Easegress 是 MegaEase 开发的下一代流量型网关，具有云原生、高
 
 基于以上观点，Easegress 从诞生之日就将可扩展性放到了重要位置，并在多个层面进行了针对性的设计。
 
-首先，在开发语言的选择上，我们有C/C++/Java/Rust/Go这些主流的静态语言的选项
+首先，在开发语言的选择上，我们有 C/C++/Java/Rust/Go 这些主流的静态语言的选项：
 
-- 使用 C/C++ 或 Rust 肯定会给 Easegress 带来最好的性能，但这些语言门槛太高，一般用户很难掌握，尤其在写业务逻辑的代码上效率实在是太低。也就谈不上通过修改代码来扩展业务逻辑了
+- 使用 C/C++ 或 Rust 肯定会给 Easegress 带来最好的性能，但这些语言门槛太高，一般用户很难掌握，开发效率过低，也就谈不上通过修改代码来扩展业务逻辑了
 - Java 易学易用，也非常适合写业务逻辑，但是体积大，而且性能不能满足要求；
 - 相对而言，Go 简单易学，性能也比较好，特别是在 Easegress 所处的网络应用领域，由于语言本身的特殊设计，很多场景下与 C/C++ 的性能差距基本可以忽略。所以，Easegress 最终选择了 Go 作为开发语言。但不管使用什么语言，源码级的扩展都不可避免的将用户限制到一门特定的语言，而且会涉及重新编译、重新布署、重新启动，造成服务的中断。
 
@@ -249,4 +247,4 @@ Easegress 是 MegaEase 开发的下一代流量型网关，具有云原生、高
 
 作为使用 WebAssembly 扩展业务逻辑的样例，我们之前已经发布了[《使用 Easegress + WebAssembly 做秒杀》]({{<ref "flash-sale.md">}})，欢迎大家阅读并向我们反馈更多的实际案例。
 
-当然，选择了 WebAssembly 意味着我们需要开发多种语言的 SDK，目前已经完成了 [AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk) 的开发，相信在 MegaEase 和整个开源社区的共同努力下，我们支持的语言会越来越多。欢迎大家关注我们的[开源社区](https://github.com/megaease/)。 
+当然，选择了 WebAssembly 意味着我们需要开发多种语言的 SDK，目前已经完成了 [AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk) 的开发，相信在 MegaEase 和整个开源社区的共同努力下，我们支持的语言会越来越多。

@@ -80,7 +80,7 @@ defaultContentLanguage = 'zh-cn'
     title = 'The Scope of Localvar'
     weight = 2
   [languages.en.params]
-    subtitle = "Investing finite lifetime into infinite program logic"
+    subtitle = "Investing finite lifecycle into infinite program execution."
     copyright = 'Bomin Zhang'
     description = "Blog of Bomin Zhang"
     [languages.en.params.author]

@@ -23,7 +23,8 @@ the web for client and server applications.
 
 This is the official definition of WebAssembly on [webassembly.org](https://webassembly.org). From
 this definition, we can see that WebAssembly is a binary instruction format. But WebAssembly Text
-Format is often called WebAssembly too, while in fact, this text format is a programming language.
+Format is often called WebAssembly too, while in fact, this text format is more like a programming
+language.
 
 After the official announcement, WebAssembly got rapid development. By November 2017, Mozilla
 announced that all major browsers including Chrome, Firefox, Safari, etc. have supported
@@ -77,7 +78,7 @@ and complement each other. Specifically:
 - WebAssembly runs in the sandbox, and any interaction with the outside can only be carried out
   after obtaining explicit permission, which results in excellent security.
 - The WebAssembly module is just a binary program and does not include an operating system
-  environment, so it cannot be executed after compilation, as what we can do in Docker.
+  environment, so it is not executable just after compilation, as what we can do in Docker.
 
 Next, let’s go through the usage of WebAssembly in the back-end by examples.
 
@@ -116,18 +117,18 @@ But this code snippet involves several important concepts, and a brief introduct
   ready to execute after being instantiated.
 - **Store**: all WebAssembly objects and host values will be "connected" to a store.
 - **Instance**: an instantiated WebAssembly module, where you can actually acquire a function from,
-  for example, to call. A the time of instantiation, the start function of the module is called.
+  for example, to call. At the time of instantiation, the start function of the module is called.
 - **Linker**(wasmtime only): a helper structure to link wasm modules/instances together.
 
 Although the above code creates an instance of a WebAssembly module, and according to the
 WebAssembly specification, the start function will be executed. But due to the security limit, the
 execution result cannot be output, so the "execution" is useless. Therefore, we need to implement
-interoperability between the host program and the WebAssembly program and provide input/output
+interoperability between the host program and the WebAssembly program to provide input/output
 interfaces for the WebAssembly program.
 
 ## 2.2. Host Call WebAssembly
 
-Assuming that our WebAssembly program has a function named sum that receives two integer variables
+Assuming that our WebAssembly program has a function named `sum` that receives two integer variables
 as parameters and returns their sum, the host program can use the following code to call this
 function:
 
@@ -357,7 +358,7 @@ considerations: one is the nearly native performance; the other is it is not res
 development language, users can use their favorite or familiar language to develop business logic.
 
 As an example of extending business logic with WebAssembly, we have published [Handle Flash Sale
-With Easegress And WebAssembly]({{<ref "flash-sale.en.md">}}). Please feel free to let us know if
+With Easegress And WebAssembly]({{<ref "flash-sale.md">}}). Please feel free to let us know if
 you have any feedback, and welcome to provide more use cases to us.
 
 As I have mentioned above, choosing WebAssembly means that we need to develop SDKs for many

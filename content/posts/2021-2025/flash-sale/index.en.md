@@ -14,11 +14,11 @@ However, significant discounts, limited quantity, and a short period leading to 
 
 This article illustrates how to leverage the [WasmHost Filter](https://github.com/megaease/easegress/blob/main/docs/03.Advanced-Cookbook/3.07.WasmHost.md) to protect the backend service in a flash sale. The [WebAssembly](https://webassembly.org/) code is written in [AssemblyScript](https://www.assemblyscript.org/) by using the [Easegress AssemblyScript SDK](https://github.com/megaease/easegress-assemblyscript-sdk).
 
-Before we start, we need to introduce why we use a service gateway with WebAssembly.  Firstly, Easegress as a service gateway is more responsible for the control logic. Secondly, the business logic like the flash sale would be a more customized thing and could be changed frequently.  Using Javascript or other high-level languages to write business logic could bring good productivity and lower technical barriers. With WebAssembly technology, the high-level languages code can be compiled to WASM and loaded dynamically at runtime. Furthermore, the WebAssembly code has good enough performance and security. So this combination can provide a perfect solution in terms of security, high performance, and customization extensions.
+Before we start, we need to introduce why we use a service gateway with WebAssembly. Firstly, Easegress as a service gateway is more responsible for the control logic. Secondly, the business logic like the flash sale would be a more customized thing and could be changed frequently. Using Javascript or other high-level languages to write business logic could bring good productivity and lower technical barriers. With WebAssembly technology, the high-level languages code can be compiled to WASM and loaded dynamically at runtime. Furthermore, the WebAssembly code has good enough performance and security. So this combination can provide a perfect solution in terms of security, high performance, and customization.
 
 ## 1. Getting Started
 
-Please ensure a recent version of [Git](https://git-scm.com/), [Golang](https://golang.org), [Node.js](https://nodejs.org/) and its package manager [npm](https://www.npmjs.com/) are installed before continue. Basic knowledge about writing and working with TypeScript modules, which is very similar to AssemblyScript, is a plus.
+Please ensure a recent version of [Git](https://git-scm.com/), [Golang](https://golang.org), [Node.js](https://nodejs.org/) and its package manager [npm](https://www.npmjs.com/) are installed before continue. Basic knowledge about writing and working with TypeScript, which is very similar to AssemblyScript, is a plus.
 
 **Note**: The `WasmHost` filter is disabled by default. To enable it, you need to build Easegress with the below command:
 
@@ -28,38 +28,38 @@ $ make build_server GOTAGS=wasmhost
 
 ### 1.1 Setting Up The Flash Sale Project
 
-1 ) Clone git repository `easegress-assemblyscript-sdk` to somewhere on disk
+1\) Clone git repository `easegress-assemblyscript-sdk` to somewhere on disk
 
 ```bash
 $ git clone https://github.com/megaease/easegress-assemblyscript-sdk.git
 ```
 
-2 ) Switch to a new directory and initialize a new node module:
+2\) Switch to a new directory and initialize a new node module:
 
 ```bash
 npm init
 ```
 
-3 ) Install the AssemblyScript compiler using npm, assume that the compiler is not required in production, and make it a development dependency:
+3\) Install the AssemblyScript compiler using npm, assume that the compiler is not required in production, and make it a development dependency:
 
 ```bash
 npm install --save-dev assemblyscript
 ```
 
-4 ) Once installed, the compiler provides a handy scaffolding utility to quickly set up a new AssemblyScript project, for example, in the directory of the just initialized node module:
+4\) Once installed, the compiler provides a handy scaffolding utility to quickly set up a new AssemblyScript project, for example, in the directory of the just initialized node module:
 
 ```bash
 npx asinit .
 ```
 
-5 ) Add `--use abort=` to the `asc` in `package.json`, for example:
+5\) Add `--use abort=` to the `asc` in `package.json`, for example:
 
 ```json
 "asbuild:untouched": "asc assembly/index.ts --target debug --use abort=",
 "asbuild:optimized": "asc assembly/index.ts --target release --use abort=",
 ```
 
-6 ) Replace the content of `assembly/index.ts` with the code below, note to replace `{EASEGRESS_SDK_PATH}` with the path in step 1). The code is just a skeleton and does "nothing" at present, it will be enhanced later:
+6\) Replace the content of `assembly/index.ts` with the code below, note to replace `{EASEGRESS_SDK_PATH}` with the path in step `1)`. The code is just a skeleton and does "nothing" at present, it will be enhanced later:
 
 ```typescript
 // this line exports everything required by Easegress,
@@ -87,7 +87,7 @@ registerProgramFactory((params: Map<string, string>) => {
 })
 ```
 
-7 ) Build with the below command, if everything is right, `untouched.wasm` (the debug version) and `optimized.wasm` (the release version) will be generated at the `build` folder.
+7\) Build with the below command, if everything is right, `untouched.wasm` (the debug version) and `optimized.wasm` (the release version) will be generated at the `build` folder.
 
 ```bash
 $ npm run asbuild
@@ -133,7 +133,7 @@ filters:
     code: 200' | egctl create -f -
 ```
 
-Note to replace `/home/megaease/example/build/optimized.wasm` with the path of the file generated in step 7) of section 1.1.
+Note to replace `/home/megaease/example/build/optimized.wasm` with the path of the file generated in step `7)` of section 1.1.
 
 In the above pipeline configuration, a `Mock` filter is used as the backend service. In practice, you will need a `Proxy` filter to forward requests to the real backend.
 
@@ -190,7 +190,7 @@ $ npm run asbuild
 $ egctl wasm reload-code
 ```
 
-`curl` the flash sale URL, we will get `not start yet.` before the start time of the flash sale.
+`curl` the flash sale URL, we will get "not start yet." before the start time of the flash sale.
 
 ```bash
 $ curl http://127.0.0.1:10080/flashsale
@@ -254,7 +254,7 @@ $ curl http://127.0.0.1:10080/flashsale
 sold out.
 ```
 
-We will get a `sold out` message at the possibility of 40%. Note the `blockRatio` is `0.4` in this example, while in practice, `0.999`, `0.9999` will be much more make sense.
+We will get a "sold out." message at the possibility of 40%. Note the `blockRatio` is `0.4` in this example, while in practice, `0.999`, `0.9999` will be much more make sense.
 
 ## 4. Lucky Once, Lucky Always
 
