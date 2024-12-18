@@ -3,9 +3,11 @@ title = '无锁多线程那些事'
 date = 2020-12-12T15:08:22+08:00
 categories = ['技术']
 tags = ['多线程']
-summary = "无锁多线程相关概念和技术，包括原子操作、内存顺序、内存模型、CAS等。"
+summary = "无锁多线程相关概念和技术，包括原子操作、内存模型、内存顺序、CAS等。"
 aliases = ["/archives/lock-free"]
 +++
+
+[English Version]({{< ref path="about-lock-free.md" lang="en" >}})
 
 首先来看一个问题：有一个初值为零的整形计数器，如果要写一个函数对其进行加一操作，但是超过 10 后要归零重新开始，最后返回本次操作的结果，这个函数应该怎么写？
 
@@ -151,15 +153,15 @@ int main() {
 
 ```shell
 ~/test$ ./a.out
-number of recorders: 1, iterations: 3
-number of recorders: 2, iterations: 4
-number of recorders: 3, iterations: 6
-number of recorders: 4, iterations: 7
-number of recorders: 5, iterations: 9
-number of recorders: 6, iterations: 11
-number of recorders: 7, iterations: 12
-number of recorders: 8, iterations: 13
-number of recorders: 9, iterations: 17
+number of reorders: 1, iterations: 3
+number of reorders: 2, iterations: 4
+number of reorders: 3, iterations: 6
+number of reorders: 4, iterations: 7
+number of reorders: 5, iterations: 9
+number of reorders: 6, iterations: 11
+number of reorders: 7, iterations: 12
+number of reorders: 8, iterations: 13
+number of reorders: 9, iterations: 17
 ```
 
 可见，不但出现了 r1 和 r2 都为 0 的情况，而且概率还不低。这就是 CPU 造成的乱序！
@@ -302,7 +304,7 @@ int main() {
 
 # 内存顺序（Memory Order）
 
-由于多流水线、多发射、超标量等技术的应用，即使只有一个核心，现代 CPU 也可能同时执行多条指令。但对我们编写的程序来说，CPU 的行为只有在出现内存（这里所说的内存也包括高速缓存）访问时，才是可观测的，所以，我们可以认为 CPU 访问内存的顺序就是其执行指令的顺序。因此，只要能控制这个访问内存的顺序，我们就能避免 CPU 内存模型导致的逻辑错误和可移植性问题了。
+由于超流水线、多发射、超标量等技术的应用，即使只有一个核心，现代 CPU 也可能同时执行多条指令。但对我们编写的程序来说，CPU 的行为只有在出现内存（这里所说的内存也包括高速缓存）访问时，才是可观测的，所以，我们可以认为 CPU 访问内存的顺序就是其执行指令的顺序。因此，只要能控制这个访问内存的顺序，我们就能避免 CPU 内存模型导致的逻辑错误和可移植性问题了。
 
 控制内存访问顺序的方法就叫做“内存顺序（memory order）”，C/C++ 语言定义了六种内存顺序，都只对原子操作才有意义。通过合理的使用它们，我们可以禁止编译器和 CPU 重排一些关键位置的指令，保证程序的逻辑正确，同时提高可移植性。下面分别说明。
 
@@ -346,7 +348,7 @@ z.store( 3, std::memory_order_relaxed );      // 使用 relaxed 将 z 置为 3
 
 在六种内存顺序中，顺序一致乍看起来是最简单的那个，但也是最容易引起误解的一个。说它看起来简单，是因为它好像是“完全禁止重排，代码必须按编写的顺序执行”的意思；说它容易引起误解，是因为它并不仅仅是这个意思，否则，对所有读操作使用 acquire，对所有写操作使用 release，对所有“读 - 修改 - 写”操作使用 acquire_release 不就够了吗？何必再引入一个“顺序一致”呢？
 
-实际上，对单个操作来说，顺序一致的语义确实与 acquire、release 或 acquire_release 相同。但如果把所有顺序一致的操作放到一起，它还可以保证所有线程以一个全局一致的顺序看到所有这些操作的结果，而不管这些操作针对的是否是同一个原子变量。注意，操作实际完成的顺序无法事前预测，所以“看到”在这里的含义是“实际观测到”而不是“事前预测到”。
+实际上，对单个操作来说，顺序一致的语义确实与 acquire、release 或 acquire_release 相同。但如果把所有顺序一致的操作放到一起，它还可以保证所有线程以一个全局一致的顺序看到所有这些操作的结果。注意，操作实际完成的顺序无法事前预测，所以“看到”在这里的含义是“实际观测到”而不是“事前预测到”。
 
 比如下面这段代码，如果有四个线程分别执行其中的四个函数，因为所有操作都是顺序一致的，那么所有四个线程看到的操作顺序必须是一致的，这意味着，如果一个线程看到 A 先于 C 完成，其它线程就不可能看到 C 先于 A 完成，反之亦然，所以当四个线程都执行完毕时，z 不可能为 0。 但即使我们看到了 A 先于 C，也因为 `write_a_then_y` 的观测知道 B 先于 C，却仍无法知道 A 和 C 到底谁先谁后（虽然理论上它们俩必然一个在前一个在后），这也是这种内存顺序使用“一致”而不是其它什么词命名的原因。
 
@@ -662,7 +664,7 @@ typedef struct _SLIST_HEADER
 
 最后，这个问题也反映出多线程里的坑不仅多而且隐蔽，我们看到了 ABA 这个坑，小心翼翼地躲过去了，却马上栽到了另一个坑里。而且，一旦栽倒，我们就会发现爬出来有多难：问题的现象看到了，却怎么也找不到根源——二者距离太远了，只能靠猜；好不容易猜了一个，想再进坑验证一下，却又找不到坑了，只能靠长时间的运行来提高概率碰运气。这也是很尬尴的。所以，多线程的开发中，小心一点，再小心一点，尽最大努力躲开坑，或许才是避免尴尬的最佳选择。
 
-## 参考资料
+# 参考资料
 
 * [std::memory_order](https://en.cppreference.com/w/cpp/atomic/memory_order)
 * [Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/)
