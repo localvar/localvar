@@ -1,5 +1,5 @@
 +++
-title = 'About Lock-free Multithreading'
+title = 'Everything About Lock-free Multithreading'
 date = 2020-12-12T15:08:22+08:00
 categories = ['技术']
 tags = ['多线程']
@@ -8,7 +8,7 @@ summary = "Introduce concepts and techniques of lock-free programming, including
 
 [中文版]({{< ref path="about-lock-free.md" lang="zh-cn" >}})
 
-Let's start with a simple question: we have an integer with initial an value `0` as a counter, if we want to write a function that adds `1` to it in each call but resets it to `0` after its value reaches 10, how should this function be implemented?
+Let's start with a simple question: we have an integer with initial value `0` as a counter, if we want to write a function that adds `1` to it in each call but resets it to `0` after its value reaches 10, how should this function be implemented?
 
 Just a piece of cake, isn't it? I think even beginners could easily write out the following code:
 
