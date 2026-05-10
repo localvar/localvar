@@ -93,7 +93,11 @@ app.get('/letter/:id{[^\./]+\.html$}', async (c) => {
 
   c.header('Cache-Control', 'no-cache');
   return c.html(<html lang="zh-cn"><Head />
-    <body>今天与昨天无关</body>
+    <body>
+      <p>有些事，我不想解释了，但你根本没必要参与，因为不是针对你的。</p>
+      <p><a href="https://item.jd.com/13615161.html">《富足》《态度》《见识》《格局》</a>这四本书是一个人写给自己女儿的，很不错，希望不要因为我推荐就因人废言。</p>
+      <p>另外，如果你一直没查过交行账户，查一下吧。</p>
+    </body>
   </html>)
 })
 
