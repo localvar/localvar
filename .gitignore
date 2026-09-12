@@ -10,3 +10,7 @@ hugo_stats.json
 # Hugo Executables
 hugo
 hugo.exe
+
+# Node.js modules
+node_modules/
+.wrangler/
